@@ -41,7 +41,7 @@ class VectorDBOperations:
                 VectorDBOperations.create_schema(client, class_name)
 
             embedding_model = AutoModel.from_pretrained(
-                "jinaai/jina-embeddings-v2-base-en", trust_remote_code=True
+                "./model", trust_remote_code=True
             )
 
             pdf_chunk = client.collections.get(class_name)
@@ -59,6 +59,7 @@ class VectorDBOperations:
 
             print("All chunks saved successfully!", uuid)
         except WeaviateBaseError as e:
+            print("hello")
             print(e)
 
     @staticmethod

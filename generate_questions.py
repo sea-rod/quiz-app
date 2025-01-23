@@ -25,8 +25,9 @@ def generate_questions(client):
         [
             (
                 "system",
-                """Based on the content provided, generate one relevant, thought-provoking and only important questions. 
-            Return the output in this JSON format:
+                """Based on the content provided, generate one or two relevant, thought-provoking and only important questions. 
+            Return the output in this JSON format.
+            NOTE:ONLY GIVE THE QUESTIONS AND NOTHING MORE THAN THAT:
             {{
                 "question_1": "first question here",
                 "question_2": "second question here"
@@ -49,7 +50,7 @@ def generate_questions(client):
     response = {}
     for id, item in enumerate(collection.iterator()):
         res = chain.invoke({"input": item.properties["content"]})
-        print(type(res))
+        print(res,end="\n\n")
         for key, value in res.items():
             print("PP")
             response[f"{id}_{key}"] = value
