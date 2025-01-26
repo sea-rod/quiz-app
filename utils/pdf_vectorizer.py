@@ -10,7 +10,7 @@ class PDFVectorizer:
         self.DATA_PATH = "./output_data"
 
     def extract_from_pdf(self):
-        md_text = pymupdf4llm.to_markdown("data/NaiveBayes.pdf")
+        md_text = pymupdf4llm.to_markdown("./data/NaiveBayes.pdf")
         pathlib.Path("./output_data/output.md").write_bytes(md_text.encode())
         print("#" * 10, "Extraction Done", "#" * 10)
 
@@ -28,6 +28,7 @@ class PDFVectorizer:
         return chunks
 
     def pdf_vectorize_store(self):
+        self.extract_from_pdf()
         documents = self.load_documents()
         chunks = self.split_text(documents)
         return chunks

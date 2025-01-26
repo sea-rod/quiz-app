@@ -1,6 +1,7 @@
 from utils.vector_operations import VectorDBOperations as db
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
+import json
 from langchain_core.output_parsers import JsonOutputParser
 from dotenv import load_dotenv
 
@@ -47,12 +48,12 @@ def generate_questions(client):
     collection = db.read(client, "pdf_chunks")
     print("retrived:", len(collection))
 
-    response = {}
     for id, item in enumerate(collection.iterator()):
+        response = {}
         res = chain.invoke({"input": item.properties["content"]})
-        print(res,end="\n\n")
+        print(res, end="\n\n")
         for key, value in res.items():
-            print("PP")
             response[f"{id}_{key}"] = value
+            yield json.dumps(response)
 
     return response
