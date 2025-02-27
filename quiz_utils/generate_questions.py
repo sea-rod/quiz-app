@@ -1,4 +1,4 @@
-from utils.vector_operations import VectorDBOperations as db
+from .utils.vector_operations import VectorDBOperations as db
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 import json
