@@ -2,14 +2,13 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from quiz_utils.utils.vector_operations import VectorDBOperations as db
 from quiz_utils.generate_questions import generate_questions
-from fastapi import UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-import json
-from router import user
+from router import user,file_op
 
 app = FastAPI()
 
 app.include_router(user.router)
+app.include_router(file_op.router)
 
 origins = [
     "http://localhost",
@@ -32,7 +31,3 @@ def read_root():
     return StreamingResponse(res)
     # return {"Error": "some error occured"}
 
-
-@app.post("/uploadfile/")
-def create_upload_file(file: UploadFile):
-    return {"filename": file.filename}

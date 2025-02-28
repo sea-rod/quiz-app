@@ -78,18 +78,7 @@ class VectorDBOperations:
         except WeaviateBaseError as e:
             print(e)
 
-    def __enter__(self):
-        return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.client.close()
-        if exc_type:
-            print(f"An exception occurred: {exc_value}")
-        return False
-
-    def __del__(self):
-        self.client.close()
-        self.client = None
 
 
 if "__main__" == __name__:

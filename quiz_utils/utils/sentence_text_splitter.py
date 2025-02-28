@@ -1,5 +1,6 @@
 from nltk.tokenize import sent_tokenize
-# nltk.download('punkt_tab')
+import nltk
+
 
 
 class SentenceTextSplitter:
@@ -18,4 +19,5 @@ class SentenceTextSplitter:
 
 
 
-
+if __name__ == "__main__":
+    nltk.download('punkt_tab')
