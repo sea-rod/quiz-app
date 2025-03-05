@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Upload } from "lucide-react";
+import apiClient from "@/components/service/axios";
 
 export default function QuizApp() {
   const [file, setFile] = useState(null);
@@ -18,16 +19,15 @@ export default function QuizApp() {
       formData.append("file", file);
 
       try {
-        const response = await fetch("http://127.0.0.1:8000/uploadfile", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (response.ok) {
-          console.log("File uploaded successfully",await response.json());
-        } else {
-          console.error("Upload failed");
-        }
+        apiClient.post("/uploadfile", formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data', // Required for file uploads
+    },
+  }).then((res)=>{
+    formData.delete("file")
+    console.log(res.data)
+    console.log("uploaded")
+  });
       } catch (error) {
         console.error("Error uploading file:", error);
       }

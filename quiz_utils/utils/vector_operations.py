@@ -1,9 +1,11 @@
 import os
 from dotenv import load_dotenv
 import weaviate
+import torch
 from weaviate.classes.init import Auth
 from weaviate.classes.config import Property, DataType
 from weaviate.exceptions import WeaviateBaseError
+from weaviate.classes.init import AdditionalConfig, Timeout
 from transformers import AutoModel
 
 
@@ -13,8 +15,13 @@ class VectorDBOperations:
         load_dotenv()
         weaviate_url = os.environ["WEAVIATE_URL"]
         weaviate_api_key = os.environ["WEAVIATE_API_KEY"]
+        print(weaviate_api_key, weaviate_url)
         client = weaviate.connect_to_weaviate_cloud(
-            cluster_url=weaviate_url, auth_credentials=Auth.api_key(weaviate_api_key)
+            cluster_url=weaviate_url,
+            auth_credentials=Auth.api_key(weaviate_api_key),
+            additional_config=AdditionalConfig(
+                timeout=Timeout(init=300, query=60, insert=120) # Values in seconds
+            ),
         )
         return client
 
@@ -35,23 +42,23 @@ class VectorDBOperations:
             print(e)
 
     @staticmethod
-    def insert(client, class_name, chunks, user_id):
+    def insert(client, chunks, user_id):
         try:
-            if not client.collections.exists(class_name):
-                VectorDBOperations.create_schema(client, class_name)
+            if not client.collections.exists(user_id):
+                VectorDBOperations.create_schema(client, user_id)
 
             embedding_model = AutoModel.from_pretrained(
                 "./model", trust_remote_code=True
             )
 
-            pdf_chunk = client.collections.get(class_name)
+            pdf_chunk = client.collections.get(user_id)
             for index, chunk in enumerate(chunks):
-                embedding = embedding_model.encode(chunk[0], device="cuda")
+                device = "cuda" if torch.cuda.is_available() else "cpu"
+                embedding = embedding_model.encode(chunk[0])
 
                 metadata = {
                     "content": chunk,
                     "chunk_index": index,
-                    "user_id": user_id,
                     "pdf_id": chunk[1],
                 }
 
@@ -77,8 +84,6 @@ class VectorDBOperations:
             print("deleting done...")
         except WeaviateBaseError as e:
             print(e)
-
-
 
 
 if "__main__" == __name__:

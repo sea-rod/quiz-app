@@ -4,7 +4,7 @@ import nltk
 
 
 class SentenceTextSplitter:
-    def __init__(self, chunk_size=3, chunk_overlap=1):
+    def __init__(self, chunk_size=10, chunk_overlap=1):
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
 

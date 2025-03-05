@@ -26,33 +26,31 @@ def resigter_user(user: User):
             },
             status_code=201,
         )
-    except auth.EmailAlreadyExistsError:
+    except auth.EmailAlreadyExistsError as _:
         raise HTTPException(
             status_code=400,
             detail=f"Account already created for the email {user.username}",
-        )
+        ) from _
 
 
-@router.post("/user/login")
-def authenticate(user: User):
-    try:
-        user_ = auth.get_user_by_email(user.username)
+# @router.post("/user/login")
+# def authenticate(user: User):
+#     try:
+#         user_ = auth.get_user_by_email(user.username)
+#         token = user["idToken"]
 
-        user_
-        token = user["idToken"]
+#         return JSONResponse(content={"token": token}, status_code=200)
 
-        return JSONResponse(content={"token": token}, status_code=200)
-
-    except Exception as e:
-        raise HTTPException(status_code=400, detail="Invalid Credentials")
+#     except Exception as e:
+#         raise HTTPException(status_code=400, detail="Invalid Credentials")
 
 
-@router.post("/ping")
-async def validate_token(token: Annotated[str, Depends(oauth2_scheme)]):
+# @router.post("/ping")
+def validate_token(token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         print(token)
         user = auth.verify_id_token(token)
 
         return user["user_id"]
-    except auth.ExpiredIdTokenError:
-        raise HTTPException(status_code=400, detail="Token Expried")
+    except auth.ExpiredIdTokenError as e:
+        raise HTTPException(status_code=400, detail="Token Expried") from e

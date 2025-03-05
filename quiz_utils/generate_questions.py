@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def generate_questions(client):
+def generate_question(client,user_id):
     parser = JsonOutputParser(
         pydantic_object={
             "type": "object",
@@ -45,15 +45,15 @@ def generate_questions(client):
     )
     chain = prompt | llm | parser
 
-    collection = db.read(client, "pdf_chunks")
+    collection = db.read(client, user_id)
     print("retrived:", len(collection))
 
-    for id, item in enumerate(collection.iterator()):
-        response = {}
+    response = {}
+    for idx, item in enumerate(collection.iterator()):
         res = chain.invoke({"input": item.properties["content"]})
         print(res, end="\n\n")
         for key, value in res.items():
-            response[f"{id}_{key}"] = value
-            yield json.dumps(response)
+            response[f"{idx}_{key}"] = value
+            # yield json.dumps(response)
 
     return response
