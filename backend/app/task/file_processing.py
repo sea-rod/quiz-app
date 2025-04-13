@@ -38,6 +38,7 @@ def process_file(file, user_id):
     pdf_vectorizer = PDFVectorizer()
     chunks = handle_upload_file(file, pdf_vectorizer.pdf_vectorize_store)
     client = db.connect_weaviate()
+    db.delete(client,user_id)
     db.insert(client, chunks, user_id)
     client.close()
     print("Done hehe")

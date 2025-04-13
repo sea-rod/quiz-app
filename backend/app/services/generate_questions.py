@@ -46,12 +46,24 @@ def generate_question(client, user_id):
     collection = db.read(client, user_id)
     print("retrived:", len(collection))
 
-    response = {}
+    num = len(collection) // 5
+    response = []
+    res = ""
     for idx, item in enumerate(collection.iterator()):
-        res = chain.invoke({"input": item.properties["content"]})
-        print(res, end="\n\n")
-        for key, value in res.items():
-            response[f"{idx}_{key}"] = value
+        res = res+" "+item.properties["content"]
+        if not (idx % num):
+            questions = chain.invoke({"input":res})
+            res = ""
+            for _, value in questions.items():
+                response.append(value)
+    client.close()
+            
+
+    # for idx, item in enumerate(collection.iterator()):
+    #     res = chain.invoke({"input": item.properties["content"]})
+    #     print(res, end="\n\n")
+    #     for key, value in res.items():
+    #         response[f"{idx}_{key}"] = value
             # yield json.dumps(response)
 
     return response

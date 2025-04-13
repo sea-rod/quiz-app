@@ -33,8 +33,9 @@ def resigter_user(user: User):
         
 def validate_token(token: Annotated[str, Depends(oauth2_scheme)]):
     try:
-        print(token)
+        # print(token)
         user = verify_user_token(token)
+        # print(user)
 
         return user["user_id"]
     except auth.ExpiredIdTokenError as e:

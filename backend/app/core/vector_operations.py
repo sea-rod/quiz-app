@@ -43,7 +43,9 @@ class VectorDBOperations:
             pdf_chunk = client.collections.get(user_id)
             n = len(chunks)
             for index, chunk in enumerate(chunks):
-                redis_client.publish(f"user:{user_id}", json.dumps({"progress": index//n * 100}))
+                progress = index/n * 100
+                print("progress:",progress)
+                redis_client.publish(user_id, json.dumps({"progress": f"{progress:.2f}"}))
                 device = "cuda" if torch.cuda.is_available() else "cpu"
                 embedding = embedding_model.encode(chunk[0],device=device)
 
@@ -56,7 +58,7 @@ class VectorDBOperations:
                 uuid = pdf_chunk.data.insert(metadata, vector=embedding)
 
             print("All chunks saved successfully!", uuid)
-            redis_client.publish(user_id,json.dumps({"status":"complete"}))
+            redis_client.publish(user_id,json.dumps({"progress":"100.00"}))
         except WeaviateBaseError as e:
             print("hello")
             print(e)
