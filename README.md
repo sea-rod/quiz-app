@@ -5,8 +5,8 @@ A full-stack quiz application designed to test users' knowledge through interact
 ---
 ## 👨‍💻 Authors
 
-- **Seamus .F. Rodrigues** (Roll No: 12345678)
-- **Rohit M. Ghosarwadkar** (Roll No: 87654321)
+- **Seamus .F. Rodrigues** (Roll No: 24P0620011)
+- **Rohit M. Ghosarwadkar** (Roll No: 24P0620005)
 
 ---
 ## 🧰 Tech Stack
