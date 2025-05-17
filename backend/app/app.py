@@ -52,7 +52,7 @@ def evaluate_batch_endpoint(batch:UserAnswer):
         # Convert Pydantic model to list of dicts for evaluate_batch
         # data = [item.dict() for item in batch.data]
         # Call the evaluate_batch function
-        # print(batch)
+        # print(batch)'
         results = evaluate_batch(batch.batch)
         return {"results": results}
     except Exception as e:
